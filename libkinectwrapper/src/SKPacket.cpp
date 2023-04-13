@@ -51,3 +51,7 @@ void SKPacket::allocateCVMat(int rows, int cols, int format, std::string name) {
     cv::Mat mat = cv::Mat(rows, cols, format);
     _namedMats[name] = mat;
 }
+
+Eigen::MatrixXd &SKPacket::getEigenMat(std::string name) {
+    return _namedEigenMats[name];
+}

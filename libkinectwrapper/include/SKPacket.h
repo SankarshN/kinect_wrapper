@@ -28,21 +28,12 @@ public:
     cv::Mat &getCVMat(std::string name);
     void allocateCVMat(int rows, int cols, int format, std::string name);
 
-    cv::Mat getRGBColor();
-    cv::Mat getRGBColorPreviewScale();
-    k4a::image getXYZDepth();
-
-    Eigen::MatrixXd getAprilTagMatrix();
-    std::vector<Eigen::MatrixXd> getAprilTagVector();
-
-    std::map<std::string, Eigen::MatrixXd> cornerDetections;
-
-protected:
-    SKWrapper *_wrapper;
-    std::map<std::string, cv::Mat> _namedMats;
+    Eigen::MatrixXd &getEigenMat(std::string name);
 
 private:
-    k4a::image getBGRAColorKinect();
+    SKWrapper *_wrapper;
+    std::map<std::string, cv::Mat> _namedMats;
+    std::map<std::string, Eigen::MatrixXd> _namedEigenMats;
 
     k4a::capture _capture;
     k4a::image _depthImage, _colorImage;

@@ -1,4 +1,5 @@
 #include "SKConfig.h"
+#include "SKPRAprilTag.h"
 #include "SKPVideoDisplay.h"
 #include "SKWrapper.h"
 
@@ -66,6 +67,7 @@ int main(int argc, char **argv) {
 
     SKConfig skc;
     SKWrapper skw(skc);
+    SKPRAprilTag skpra("RGB1080p", "apriltag", "tagcorners", true);
     SKPVideoDisplay skpVideoDisplay("RGB1080p");
 
     skw.addRecipient(&skpVideoDisplay);
