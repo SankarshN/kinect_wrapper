@@ -10,7 +10,7 @@ using namespace std;
 
 
 SKPRAprilTag::SKPRAprilTag(
-    std::string image, std::string resultMat, std::string outImage, bool render) :
+    std::string image, std::string outImage, std::string resultMat, bool render) :
     _image(image),  _resultMat(resultMat), _outImage(outImage), _render(render) {
     td = apriltag_detector_create();
     tf = tag36h11_create();
@@ -18,21 +18,12 @@ SKPRAprilTag::SKPRAprilTag(
 }
 
 void SKPRAprilTag::receiveFrame(SKPacket &skp) {
-    skp.getEigenMat(_resultMat) =
-        detectCorners(skp.getCVMat(_image));
+    skp.allocateCVMat(skp.getCVMat(_outImage).rows, skp.getCVMat(_outImage).cols, CV_8UC3, _outImage);
+    skp.copyCVMat(_image, _outImage);
+    skp.getEigenMat(_resultMat) = Eigen::MatrixXd(0,0);
 
-    for(size_t i = 0; i < _recipients.size(); i++) {
-        _recipients[i]->receiveFrame(skp);
-    }
-}
-
-void SKPRAprilTag::addRecipient(SKPRecipient *skpr) {
-    _recipients.push_back(skpr);
-}
-
-Eigen::MatrixXd SKPRAprilTag::detectCorners(const cv::Mat &img){
     Mat gray;
-    cvtColor(img, gray, COLOR_BGR2GRAY);
+    cvtColor(skp.getCVMat(_image), gray, COLOR_BGR2GRAY);
     image_u8_t im = {.width = gray.cols,
                      .height = gray.rows,
                      .stride = gray.cols,
@@ -46,11 +37,25 @@ Eigen::MatrixXd SKPRAprilTag::detectCorners(const cv::Mat &img){
         zarray_get(tags, i, &det);
 
         Eigen::MatrixXd detectedCorners(2,4);
+
         for (int i = 0; i < 4; i++){
-            detectedCorners(0, i) = det->p[i][0];
-            detectedCorners(1, i) = det->p[i][1];
+            double x = det->p[i][0];
+            double y = det->p[i][1];
+            detectedCorners(0, i) = x;
+            detectedCorners(1, i) = y;
+            cv::Point detection(x, y);
+            cv::circle(skp.getCVMat(_outImage), detection, 5, Scalar(255, 255, 255), 5);
         }
-        return detectedCorners;
+
+
+        skp.getEigenMat(_resultMat) = detectedCorners;
     }
-    return Eigen::MatrixXd(0,0);
+
+    for(size_t i = 0; i < _recipients.size(); i++) {
+        _recipients[i]->receiveFrame(skp);
+    }
+}
+
+void SKPRAprilTag::addRecipient(SKPRecipient *skpr) {
+    _recipients.push_back(skpr);
 }

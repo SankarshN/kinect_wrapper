@@ -10,13 +10,11 @@
 
 class SKPRAprilTag : public SKPRecipient {
 public:
-    SKPRAprilTag(std::string image, std::string resultMat, std::string outImage, bool render);
+    SKPRAprilTag(std::string image, std::string outImage, std::string resultMat, bool render);
     void receiveFrame(SKPacket &skp);
     void addRecipient(SKPRecipient *skpr);
 
-protected:
-    Eigen::MatrixXd detectCorners(const cv::Mat &img);
-    
+protected:    
     std::string _image, _resultMat, _outImage;
     bool _render;
 

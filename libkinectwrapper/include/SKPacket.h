@@ -27,6 +27,7 @@ public:
 
     cv::Mat &getCVMat(std::string name);
     void allocateCVMat(int rows, int cols, int format, std::string name);
+    void copyCVMat(std::string fromName, std::string toName);
 
     Eigen::MatrixXd &getEigenMat(std::string name);
 
