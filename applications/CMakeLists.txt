@@ -3,4 +3,5 @@ project(kinect_wrapper_applications)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
+# add_subdirectory (pointCloudTest)
 add_subdirectory (singleKinectTest)
