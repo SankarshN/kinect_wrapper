@@ -27,6 +27,7 @@ include_directories(
 )
 
 SET(MULTIKINECT_SRC
+    SKPFaceDetector.cpp
     singleKinectTest.cpp
 )
 

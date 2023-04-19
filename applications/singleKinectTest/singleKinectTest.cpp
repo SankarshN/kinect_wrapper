@@ -1,5 +1,6 @@
 #include "SKConfig.h"
 #include "SKPRAprilTag.h"
+#include "SKPFaceDetector.h"
 #include "SKPVideoDisplay.h"
 #include "SKWrapper.h"
 
@@ -67,11 +68,12 @@ int main(int argc, char **argv) {
 
     SKConfig skc;
     SKWrapper skw(skc);
-    SKPRAprilTag skpra("RGB1080p", "apriltag", "tagcorners", true);
-    SKPVideoDisplay skpVideoDisplay("apriltag");
+    //SKPRAprilTag skpra("RGB1080p", "apriltag", "tagcorners", true);
+    SKPFaceDetector spfd;
+    SKPVideoDisplay skpVideoDisplay("face_detections");
 
-    skw.addRecipient(&skpra);
-    skpra.addRecipient(&skpVideoDisplay);
+    skw.addRecipient(&spfd);
+    spfd.addRecipient(&skpVideoDisplay);
 
     GtkApplication *app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
     g_signal_connect (app, "activate", G_CALLBACK (buildUI), &skpVideoDisplay);
