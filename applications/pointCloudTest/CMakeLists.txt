@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
-project(singleKinectTest)
+project(pointCloudTest)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 #find_package(libkinectwrapper REQUIRED)
 
-message("singleKinectTest.libkinectwrapper_INCLUDE_DIRS:  " ${libkinectwrapper_INCLUDE_DIRS})
+message("pointCloudTest.libkinectwrapper_INCLUDE_DIRS:  " ${libkinectwrapper_INCLUDE_DIRS})
 
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
@@ -27,13 +27,12 @@ include_directories(
 )
 
 SET(MULTIKINECT_SRC
-    SKPFaceDetector.cpp
-    singleKinectTest.cpp
+    pointCloudTest.cpp
 )
 
-add_executable(singleKinectTest  ${MULTIKINECT_SRC})
+add_executable(pointCloudTest  ${MULTIKINECT_SRC})
 
-target_link_libraries(singleKinectTest kinectwrapper
+target_link_libraries(pointCloudTest kinectwrapper
     k4a
     #k4abt
     k4arecord
@@ -42,7 +41,7 @@ target_link_libraries(singleKinectTest kinectwrapper
     #vision_geometry
     GL
     GLU
-    #glfw
+    glfw
     gthread-2.0
     ${OpenCV_LIBRARIES}
     ${GTK3_LIBRARIES}
