@@ -12,7 +12,12 @@ SMColorBlob::SMColorBlob(
 
 void SMColorBlob::receiveFrame(SKPacket &skp) {
     // skp.allocateCVMat(skp.getCVMat(_image).rows, skp.getCVMat(_image).cols, CV_8UC3, _image);
-    processImage(skp.getCVMat(_image));
+    cv::Mat &inMat = skp.getCVMat(_image);
+    skp.allocateCVMat(inMat.rows, inMat.cols, CV_8UC3, "color_blob_rgb");
+    cv::Mat &cbMat = skp.getCVMat("color_blob_rgb");
+    inMat.copyTo(cbMat);
+
+    processImage(cbMat);
     // skp.copyCVMat(_image, _outImage);
 
     // cvtColor(skp.getCVMat(_image), gray, COLOR_BGR2GRAY);
@@ -20,7 +25,9 @@ void SMColorBlob::receiveFrame(SKPacket &skp) {
     //                  .height = gray.rows,
     //                  .stride = gray.cols,
     //                  .buf = gray.data};
-
+    for(size_t i = 0; i < _recipients.size(); i++) {
+        _recipients[i]->receiveFrame(skp);
+    }
 }
 
 void SMColorBlob::processImage(cv::Mat img) {
@@ -118,4 +125,8 @@ void SMColorBlob::findBGR() {
     final_image = temp;
     skp.allocateCVMat(skp.getCVMat(bgr_cup).rows, skp.getCVMat(bgr_cup).cols, CV_8UC3, "bgr_cup");
     skp.copyCVMat("bgr_cup", _outImage);
+}
+
+void SMColorBlob::addRecipient(SKPRecipient *skpr) {
+    _recipients.push_back(skpr);
 }

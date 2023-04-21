@@ -69,6 +69,10 @@ int main(int argc, char **argv) {
     SKConfig skc;
     SKWrapper skw(skc);
     SMColorBlob skpra("RGB1080p", "colorblob");
+    //get color image
+    //call neural net to segment image
+    //get segmented color image
+    //overlay
     SKPVideoDisplay skpVideoDisplay("colorblob");
 
     GtkApplication *app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
