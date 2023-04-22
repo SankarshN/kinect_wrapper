@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
     g_thread_init(NULL);
 
     SKConfig skc;
-    SKWrapper skw(skc);
+    SKWrapper skw(skc, 15);
     //SKPRAprilTag skpra("RGB1080p", "apriltag", "tagcorners", true);
     SKPFaceDetector spfd;
     SKPVideoDisplay skpVideoDisplay("face_detections");

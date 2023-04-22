@@ -2,10 +2,12 @@ cmake_minimum_required(VERSION 2.8)
 project(singleKinectTest)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+# set(Python3_DIR "/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu")
 
 #find_package(libkinectwrapper REQUIRED)
 
 message("singleKinectTest.libkinectwrapper_INCLUDE_DIRS:  " ${libkinectwrapper_INCLUDE_DIRS})
+# message("source: " ${Python3_DIR})
 
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
@@ -13,6 +15,7 @@ find_package(Cairo REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(Ceres REQUIRED)
 find_package(Boost REQUIRED COMPONENTS program_options)
+find_package(PythonLibs 3 REQUIRED)
 
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 # pkg_check_modules(GTK3 REQUIRED gtkglext-1.0)
@@ -49,4 +52,5 @@ target_link_libraries(singleKinectTest kinectwrapper
     ${CAIRO_LIBRARIES}
     ${CERES_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
+    /usr/lib/python3.6/config-3.6m-x86_64-linux-gnu/libpython3.6.so
 )
