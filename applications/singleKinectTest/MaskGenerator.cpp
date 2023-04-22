@@ -1,66 +1,67 @@
-#include "SMColorBlob.h"
 #include "MaskGenerator.h"
-#include "SKPacket.h"
+#include <String.h>
 
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION // not sure if this line is needed...
-#include <numpy/ndarrayobject.h>
-#include <opencv4/opencv2/opencv.hpp>
-#include <iostream>
 
-using namespace std;
-using namespace cv;
+cv::Mat MaskGenerator::getModelMask(cv::Mat cbMat, String model) {
+    Py_Initialize();
 
-SMColorBlob::SMColorBlob(
-    std::string image, std::string outImage) :
-    _image(image),  _outImage(outImage) {
+    // Retrieve the correspondnig module and function for the masking technique
+    PyObject* python_module = PyImport_ImportModule(model);
+    PyObject* python_masking_func = PyObject_GetAttrString(python_module, "get_mask"); 
 
+    // Convert the cv::Mat to an nparray
+    npy_intp dimensions[3] = {cbMat.rows, cbMat.cols, cbMat.channels()};
+    PyObject* python_np_arr = PyArray_SimpleNewFromData(cbMat.dims + 1, (npy_intp*)&dimensions, NPY_UINT8, cbMat.data);
+
+    // Call the masking function with the converted image data (result should be np array)
+    PyObject* python_result = PyObject_CallObject(python_masking_function, python_np_arr);
+
+    // Convert the numpy array to a cv::Mat
+    cv::Mat cbMat_processed = cv::python::matFromNDArray(python_result);
+
+    return cbMat_processed;
 }
 
-void SMColorBlob::receiveFrame(SKPacket &skp) {
-    cv::Mat &inMat = skp.getCVMat(_image);
-    skp.allocateCVMat(inMat.rows, inMat.cols, CV_8UC3, "color_blob_rgb");
-    cv::Mat &cbMat = skp.getCVMat("color_blob_rgb");
-    inMat.copyTo(cbMat);
+cv::Mat MaskGenerator::getColorMask(cv::Mat cbMat, String color) {
+    split(cbMat);
+    cv::Mat initial = color == "blue" ? _chans[0] : color == "green" ? _chans[1] : _chans[2];
+    cv::Mat subtract = color == "blue" ? _chans[2] : color == "green" ? _chans[0] : _chans[1];
 
-    // Every recipient receives the (processed?) frame
-    for(size_t i = 0; i < _recipients.size(); i++) {
-        _recipients[i]->receiveFrame(skp);
+    cv::subtract(intial, subtract, subtraction);
+    cv::threshold(blue_subtraction, threshold, 55, 205, cv::THRESH_BINARY);
+
+    std::vector<cv::Mat> contours;
+    std::vector<cv::Vec4i> hierarchy;
+    cv::findContours(threshold, contours, hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE);
+
+    int largest_i = 0;
+    for (int i = 0; i < contours.size(); i++) {
+        if (cv::contourArea(contours[i]) > cv::contourArea(contours[largest_i])) {
+            largest_i = i;
+        }
     }
 
-    // 
-    
+    mask = cv::Mat::zeros(_chans[0].rows, _chans[0].cols, CV_8UC1);
+    cv::drawContours(mask, contours, largest_i, cv::Scalar(205), cv::LineTypes::FILLED, 8, hierarchy);
 
-    // Apply the mask on the original image to extract the 2D data
-
-    // Pass in the depth camera data and the masked image to the transform class
-
-
-
-    // skp.copyCVMat(_image, _outImage);
-
-    // cvtColor(skp.getCVMat(_image), gray, COLOR_BGR2GRAY);
-    // image_u8_t im = {.width = gray.cols,
-    //                  .height = gray.rows,
-    //                  .stride = gray.cols,
-    //                  .buf = gray.data};
-    
+    return mask;
 }
 
-void SMColorBlob::processImage(cv::Mat img) {
-    _frame = img;
-    split();
-    findBlue();
-    findGreen();
-    findRed();
-    findBGR();
-    // showResult();
+cv::Mat MaskGenerator::getRGBMask(cv::Mat cbMat) {
+    cv::Mat blue_mask = getColorMask(cbMat, "blue");
+    cv::Mat green_mask = getColorMask(cbMat, "green");
+    cv::Mat red_mask = getColorMask(cbMat, "red");
+    
+    cv::bitwise_or(blue_mask, green_mask, final_mask);
+    cv::bitwise_or(red_mask, final_mask, final_mask);
+    return final_mask;
 }
 
-// void SMColorBlob::split() {
-//     cv::split(_frame, _chans);
-// }
+void MaskGenerator::split(cv::Mat cbMat) {
+    cv::split(cbMat, _chans);
+}
 
-// void SMColorBlob::findBlue() {
+// void MaskGenerator::findBlue() {
 //     cv::subtract(_chans[0], _chans[2], blue_subtraction);
 //     cv::threshold(blue_subtraction, blue_threshold, 55, 205, cv::THRESH_BINARY);
 
@@ -85,7 +86,7 @@ void SMColorBlob::processImage(cv::Mat img) {
 //     skp.copyCVMat("blue_cup", _outImage);
 // }
 
-// void SMColorBlob::findGreen() {
+// void MaskGenerator::findGreen() {
 //     cv::subtract(_chans[1], _chans[0], green_subtraction);
 //     cv::threshold(green_subtraction, green_threshold, 60, 205, cv::THRESH_BINARY);
     
@@ -109,7 +110,7 @@ void SMColorBlob::processImage(cv::Mat img) {
 //     skp.copyCVMat("green_cup", _outImage);
 // }
 
-// void SMColorBlob::findRed() {
+// void MaskGenerator::findRed() {
 //     cv::subtract(_chans[2], _chans[1], red_subtraction);
 //     cv::threshold(red_subtraction, red_threshold, 55, 205, cv::THRESH_BINARY);
     
@@ -131,18 +132,3 @@ void SMColorBlob::processImage(cv::Mat img) {
 //     skp.allocateCVMat(skp.getCVMat(red_cup).rows, skp.getCVMat(red_cup).cols, CV_8UC3, "red_cup");
 //     skp.copyCVMat("red_cup", _outImage);
 // }
-
-// void SMColorBlob::findBGR() {
-//     cv::bitwise_or(blue_mask, green_mask, final_mask);
-//     cv::bitwise_or(red_mask, final_mask, final_mask);
-
-//     cv::Mat temp;
-//     _frame.cv::Mat::copyTo(temp, final_mask);
-//     final_image = temp;
-//     skp.allocateCVMat(skp.getCVMat(bgr_cup).rows, skp.getCVMat(bgr_cup).cols, CV_8UC3, "bgr_cup");
-//     skp.copyCVMat("bgr_cup", _outImage);
-// }
-
-void SMColorBlob::addRecipient(SKPRecipient *skpr) {
-    _recipients.push_back(skpr);
-}
