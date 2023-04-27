@@ -29,7 +29,9 @@ include_directories(
 )
 
 SET(LIB_KINECT_WRAPPER_SRC
+    src/SKComputeXYZImage.cpp
     src/SKConfig.cpp
+    src/SKDepthViewer.cpp
     src/SKPacket.cpp
     src/SKPRAprilTag.cpp
     src/SKPVideoDisplay.cpp

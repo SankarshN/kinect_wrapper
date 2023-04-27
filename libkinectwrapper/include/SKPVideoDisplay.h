@@ -10,7 +10,7 @@
 class SKPVideoDisplay : public SKPRecipient {
 public:
     //Display rows & columns
-    SKPVideoDisplay(std::string imgName);
+    SKPVideoDisplay(std::string imgName, int cols = 1920, int rows = 1080);
     ~SKPVideoDisplay();
     void receiveFrame(SKPacket &skp);
     void buildWidgets(GtkWidget *container);

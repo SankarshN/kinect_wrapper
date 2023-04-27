@@ -10,6 +10,8 @@
 class SKConfig;
 class SKPRecipient;
 
+//https://github.com/utexas-bwi/single_kinect
+
 class SKWrapper : public DoOnce {
 public:
     SKWrapper(SKConfig &skconfig, uint8_t deviceIndex = 0);

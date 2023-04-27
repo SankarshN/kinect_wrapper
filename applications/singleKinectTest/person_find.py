@@ -1,8 +1,9 @@
 import face_recognition
 
-print("hello")
+# print("hello")
 
 def get_encoding(image):
+    pass
     return face_recognition.face_encodings(image)[0]
 
 def find_person(image, original_encoding):

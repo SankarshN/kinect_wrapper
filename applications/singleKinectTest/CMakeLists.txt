@@ -27,25 +27,29 @@ include_directories(
     ${APRIL_TAG_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
     ${Boost_INCLUDE_DIRS}
+    /usr/include/python3.6
+    /root/projects/kinect_wrapper/applications/singleKinectTest
 )
 
 SET(MULTIKINECT_SRC
     SKPFaceDetector.cpp
     singleKinectTest.cpp
+    ColorBlob/SMColorBlob.cpp
+    ColorBlob/MaskGenerator.cpp
 )
 
 add_executable(singleKinectTest  ${MULTIKINECT_SRC})
 
 target_link_libraries(singleKinectTest kinectwrapper
     k4a
-    #k4abt
+    # k4abt
     k4arecord
     pthread
     apriltag
     #vision_geometry
     GL
     GLU
-    #glfw
+    glfw
     gthread-2.0
     ${OpenCV_LIBRARIES}
     ${GTK3_LIBRARIES}

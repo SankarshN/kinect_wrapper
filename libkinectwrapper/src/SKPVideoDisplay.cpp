@@ -5,9 +5,9 @@
 #include <iostream>
 using namespace std;
 
-SKPVideoDisplay::SKPVideoDisplay(std::string imgName) :
+SKPVideoDisplay::SKPVideoDisplay(std::string imgName, int cols, int rows) :
     _initialized(false),
-    _rows(1080), _cols(1920),
+    _rows(rows), _cols(cols),
     _bytes(_cols * _rows * 3),
     _drawingArea(NULL),
     _buf((unsigned char *)calloc(1, _bytes)),

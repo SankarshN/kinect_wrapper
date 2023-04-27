@@ -22,19 +22,26 @@ public:
 
     SKWrapper *getSKWrapper();
 
+    k4a::image getDepthImage();
+    k4a::image getColorImage();
+
     k4a::capture getCapture();
     void setCapture(k4a::capture capture);
 
     cv::Mat &getCVMat(std::string name);
     void allocateCVMat(int rows, int cols, int format, std::string name);
+    void setCVMat(cv::Mat mat, std::string name);
     void copyCVMat(std::string fromName, std::string toName);
 
     Eigen::MatrixXd &getEigenMat(std::string name);
+
+    k4a::image &getK4AImage(std::string name);
 
 private:
     SKWrapper *_wrapper;
     std::map<std::string, cv::Mat> _namedMats;
     std::map<std::string, Eigen::MatrixXd> _namedEigenMats;
+    std::map<std::string, k4a::image> _namedImages;
 
     k4a::capture _capture;
     k4a::image _depthImage, _colorImage;
