@@ -1,15 +1,18 @@
 #include "MaskGenerator.h"
+// #include <python3.6/Python.h>
 #include <python3.6/Python.h>
 
 
 #include <opencv2/opencv.hpp>
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/ndarrayobject.h>
 #include <string>
 #include <vector>
 #include <iostream>
 
-
+// export PYTHONPATH=`pwd` in build and in colorblob directory
 cv::Mat MaskGenerator::getModelMask(cv::Mat cbMat, std::string model) {
+
     Py_Initialize();
 
     // Retrieve the correspondnig module and function for the masking technique
@@ -17,22 +20,24 @@ cv::Mat MaskGenerator::getModelMask(cv::Mat cbMat, std::string model) {
     PyObject* python_module = PyImport_ImportModule(c);
     if (python_module == nullptr) {
         PyErr_Print();
-        std::exit(1);
+         std::cout << "null";
     }
-    std::cout << python_module;
-    // PyObject* python_masking_func = PyObject_GetAttrString(python_module, "get_mask"); 
+    PyObject* python_masking_func = PyObject_GetAttrString(python_module, "get_mask"); 
 
-    // // Convert the cv::Mat to an nparray
-    // dimensions[0] = cbMat.rows;
-    // dimensions[1] = cbMat.cols;
-    // dimensions[2] = cbMat.channels();
-    // PyObject* python_np_arr = PyArray_SimpleNewFromData(cbMat.dims + 1, (npy_intp*)&dimensions, NPY_UINT8, cbMat.data);
+    // Convert the cv::Mat to an nparray
+    dimensions[0] = cbMat.rows;
+    dimensions[1] = cbMat.cols;
+    dimensions[2] = cbMat.channels();
 
-    // // Call the masking function with the converted image data (result should be np array)
-    // PyObject* python_result = PyObject_CallObject(python_masking_func, python_np_arr);
+    cv::Mat input_mat;
+    cv::cvtColor(cbMat, input_mat, cv::COLOR_BGR2RGB);
+    PyObject* python_np_arr = PyArray_SimpleNewFromData(3, dimensions, NPY_UINT8, input_mat.data);
 
-    // // Convert the numpy array to a cv::Mat
-    // cv::Mat cbMat_processed = npToMat(python_result);
+    // Call the masking function with the converted image data (result should be np array)
+    PyObject* python_result = PyObject_CallObject(python_masking_func, python_np_arr);
+
+    // Convert the numpy array to a cv::Mat
+    cv::Mat cbMat_processed = npToMat(python_result);
 
     return cbMat;
 }

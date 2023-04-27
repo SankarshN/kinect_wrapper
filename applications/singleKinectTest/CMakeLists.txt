@@ -16,6 +16,7 @@ find_package(PkgConfig REQUIRED)
 find_package(Ceres REQUIRED)
 find_package(Boost REQUIRED COMPONENTS program_options)
 find_package(PythonLibs 3 REQUIRED)
+# find_package(Python3 COMPONENTS Interpreter Development NumPy ultralytics REQUIRED)
 
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 # pkg_check_modules(GTK3 REQUIRED gtkglext-1.0)
@@ -27,7 +28,8 @@ include_directories(
     ${APRIL_TAG_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
     ${Boost_INCLUDE_DIRS}
-    /usr/include/python3.6
+    # /usr/include/python3.6
+    /usr/local/include/python3.11
     /root/projects/kinect_wrapper/applications/singleKinectTest
 )
 
@@ -45,7 +47,7 @@ target_link_libraries(singleKinectTest kinectwrapper
     # k4abt
     k4arecord
     pthread
-    apriltag
+    # apriltag
     #vision_geometry
     GL
     GLU
@@ -56,5 +58,8 @@ target_link_libraries(singleKinectTest kinectwrapper
     ${CAIRO_LIBRARIES}
     ${CERES_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
-    /usr/lib/python3.6/config-3.6m-x86_64-linux-gnu/libpython3.6.so
+    # /usr/lib/python3.6/config-3.6m-x86_64-linux-gnu/libpython3.6.so
+    /usr/local/lib/libpython3.11.so
+    ${PythonLibs_LIBRARIES}
+    # ${Python3_LIBRARIES}
 )

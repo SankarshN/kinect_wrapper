@@ -19,10 +19,6 @@ public:
     cv::Mat getRGBMask(cv::Mat cbMat);
     cv::Mat npToMat(PyObject *self);
 
-    // void findBlue();
-    // void findGreen();
-    // void findRed();
-    // void findBGR();
 };
 
 #endif

@@ -33,7 +33,7 @@ SET(LIB_KINECT_WRAPPER_SRC
     src/SKConfig.cpp
     src/SKDepthViewer.cpp
     src/SKPacket.cpp
-    src/SKPRAprilTag.cpp
+    # src/SKPRAprilTag.cpp
     src/SKPVideoDisplay.cpp
     src/SKWrapper.cpp
 )

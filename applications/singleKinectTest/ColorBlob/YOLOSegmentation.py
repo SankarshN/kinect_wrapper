@@ -1,18 +1,16 @@
 from ultralytics import YOLO
 import numpy as np
+from PIL import Image
 import cv2
 import torch
 import cv2
-import MaskingClass
 
-
-class YOLOSegmentation(MaskingClass):
+class YOLOSegmentation:
     def __init__(self, model_path):
         self.model = YOLO(model_path)
 
     def detect(self, img):
         # Get img shape
-
         height, width, channels = img.shape
 
         results = self.model.predict(source=img.copy(), save=False, save_txt=False)
