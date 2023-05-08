@@ -1,10 +1,10 @@
 #include <SKComputeXYZImage.h>
 #include "SKConfig.h"
-#include "SKPRAprilTag.h"
+// #include "SKPRAprilTag.h"
 // #include "SKPFaceDetector.h"
 #include "SKPVideoDisplay.h"
 #include "SKWrapper.h"
-#include "ColorBlob/SMColorBlob.h"
+// #include "ColorBlob/SMColorBlob.h"
 #include <SKDepthViewer.h>
 
 #include <gtk/gtk.h>
@@ -80,24 +80,24 @@ int main(int argc, char **argv) {
     SKConfig skc;
     SKWrapper skw(skc);
     // SKPRAprilTag skpra("RGB1080p", "apriltag", "tagcorners", true);
-    SMColorBlob skpra("RGB1080p", "colorblob");
+    // SMColorBlob skpra("RGB1080p", "colorblob");
     // SKPFaceDetector spfd(skw);
     //SKPVideoDisplay skpVideoDisplay("face_detections");
     // SKPVideoDisplay skpVideoDisplay("apriltag");
 
     
     // SKPVideoDisplay skpVideoDisplay("DEPTH_REGISTERED_640x576_RGB", 640, 576); // Depth Viewer
-    SKPVideoDisplay skpVideoDisplay("colorblob"); // Masked image
+    SKPVideoDisplay skpVideoDisplay("RGB1080p"); // Masked image
 
-    skw.addRecipient(&skpra);
+    skw.addRecipient(&skpVideoDisplay);
     // spfd.addRecipient(&skpVideoDisplay);
 
     //skw.addRecipient(&spfd);
-    skpra.addRecipient(&skpVideoDisplay);
+    // skpra.addRecipient(&skpVideoDisplay);
 
     SKComputeXYZImage skxyz;
-    SKDepthViewer skd("DEPTH_REGISTERED_640x576_RGB");
-    skpra.addRecipient(&skxyz);
+    SKDepthViewer skd("RGB1080p");
+    skw.addRecipient(&skxyz);
     skxyz.addRecipient(&skd);
 
 

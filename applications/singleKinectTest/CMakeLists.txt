@@ -29,15 +29,15 @@ include_directories(
     ${EIGEN3_INCLUDE_DIR}
     ${Boost_INCLUDE_DIRS}
     # /usr/include/python3.6
-    /usr/local/include/python3.11
-    /root/projects/kinect_wrapper/applications/singleKinectTest
+    # /usr/local/include/python3.11
+    # /root/projects/kinect_wrapper/applications/singleKinectTest
 )
 
 SET(MULTIKINECT_SRC
-    SKPFaceDetector.cpp
+    # SKPFaceDetector.cpp
     singleKinectTest.cpp
-    ColorBlob/SMColorBlob.cpp
-    ColorBlob/MaskGenerator.cpp
+    # ColorBlob/SMColorBlob.cpp
+    # ColorBlob/MaskGenerator.cpp
 )
 
 add_executable(singleKinectTest  ${MULTIKINECT_SRC})
@@ -59,7 +59,7 @@ target_link_libraries(singleKinectTest kinectwrapper
     ${CERES_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     # /usr/lib/python3.6/config-3.6m-x86_64-linux-gnu/libpython3.6.so
-    /usr/local/lib/libpython3.11.so
+    # /usr/local/lib/libpython3.11.so
     ${PythonLibs_LIBRARIES}
     # ${Python3_LIBRARIES}
 )
