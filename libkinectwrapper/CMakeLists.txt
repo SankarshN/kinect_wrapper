@@ -43,7 +43,7 @@ SET(LIB_KINECT_WRAPPER_INCLUDES
 )
 
 
-add_library(kinectwrapper ${LIB_KINECT_WRAPPER_SRC})
+add_library(kinectwrapper SHARED ${LIB_KINECT_WRAPPER_SRC})
 
 install(TARGETS kinectwrapper DESTINATION lib)
 install(DIRECTORY include/ DESTINATION include/kinectwrapper)

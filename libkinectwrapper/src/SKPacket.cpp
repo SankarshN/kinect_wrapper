@@ -1,5 +1,6 @@
 #include "SKPacket.h"
 #include "SKConfig.h"
+#include "SKWrapper.h"
 #include <opencv2/imgproc.hpp>
 
 using namespace std;

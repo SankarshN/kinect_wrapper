@@ -1,5 +1,6 @@
 #include <SKComputeXYZImage.h>
 #include <SKPacket.h>
+#include <SKWrapper.h>
 
 // #include <k4a/k4a.h>
 

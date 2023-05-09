@@ -2,6 +2,7 @@
 #define SK_WRAPPER_LIVE_H
 
 #include "DoOnce.h"
+#include "SKPacket.h"
 
 #include <k4a/k4a.hpp>
 #include <vector>
@@ -21,6 +22,7 @@ public:
 
     void doOnce();
     SKConfig &getSKConfig();
+    SKPacket &getMostRecentFrame();
 
     //The sync master must be started last
     void start();
@@ -32,6 +34,7 @@ public:
    
     k4a::transformation transformation;
 protected:
+    SKPacket _mostRecentPacket;
     std::vector<SKPRecipient *> _recipients;
     SKConfig &_skconfig;
     k4a::device _device;

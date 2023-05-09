@@ -1,5 +1,4 @@
 #include "SKWrapper.h"
-#include "SKPacket.h"
 #include "SKConfig.h"
 #include "SKPRecipient.h"
 #include <k4arecord/playback.h>
@@ -9,6 +8,7 @@
 using namespace std;
 
 SKWrapper::SKWrapper(SKConfig &skconfig, uint8_t deviceIndex) :
+    _mostRecentPacket(this),
     _skconfig(skconfig), _device(NULL), _config(skconfig._config) {
 
     _device = k4a::device::open(deviceIndex);
@@ -56,13 +56,13 @@ void SKWrapper::capture(k4a::capture *cap) {
 }
 
 void SKWrapper::doOnce() {
-    SKPacket skp(this);
-    k4a::capture cap = skp.getCapture();
+    _mostRecentPacket = SKPacket(this);
+    k4a::capture cap = _mostRecentPacket.getCapture();
     capture(&cap);
-    skp.setCapture(cap);
+    _mostRecentPacket.setCapture(cap);
 
     for(size_t i = 0; i < _recipients.size(); i++) {
-        _recipients[i]->receiveFrame(skp);
+        _recipients[i]->receiveFrame(_mostRecentPacket);
     }
 }
 
@@ -72,6 +72,10 @@ void SKWrapper::addRecipient(SKPRecipient *skpr) {
 
 SKConfig &SKWrapper::getSKConfig() {
     return _skconfig;
+}
+
+SKPacket &SKWrapper::getMostRecentFrame() {
+    return _mostRecentPacket;
 }
 
 

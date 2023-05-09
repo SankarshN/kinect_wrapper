@@ -2,7 +2,7 @@
 #define SK_PACKET_H
 
 #include <Eigen/Eigen>
-#include <k4a/k4a.h>
+#include <k4a/k4a.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -10,7 +10,6 @@
 #include <string>
 
 #include <cstdlib>
-#include "SKWrapper.h"
 
 class SKConfig;
 class SKWrapper;
