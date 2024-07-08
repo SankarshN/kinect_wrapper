@@ -4,6 +4,7 @@
 #include <SKDepthViewer.h>
 #include "SKPVideoDisplay.h"
 #include "SKWrapper.h"
+#include "SKPRAprilTag.h"
 
 #include <gtk/gtk.h>
 #include <iostream>
@@ -15,6 +16,7 @@
 #include <unistd.h> // write(), read(), close()
 #include <stdio.h>
 #include <string.h>
+#include <k4a/k4a.hpp>
 
 using namespace std;
 
@@ -79,6 +81,8 @@ int main(int argc, char **argv) {
     SKWrapper skw(skc);
     SKPRDepthRegister sdr;
     SKComputeXYZImage skxyz;
+    SKPRAprilTag at("RGB1080p", "outputImage", "resultMatrix", true, skw.getCalibration());
+
 
     skw.addRecipient(&sdr);
     sdr.addRecipient(&skxyz);
@@ -86,7 +90,10 @@ int main(int argc, char **argv) {
     SKPVideoDisplay skpVideoDisplay("RGB1080p"); // Masked image
     SKDepthViewer skd("DEPTH_REGISTERED_640x576_RGB");
     skxyz.addRecipient(&skpVideoDisplay);
-    skxyz.addRecipient(&skd);
+    skxyz.addRecipient(&skd); // shows kinect view
+
+    skxyz.addRecipient(&at);
+    at.addRecipient(&skpVideoDisplay); // shows the real life view
 
 
 

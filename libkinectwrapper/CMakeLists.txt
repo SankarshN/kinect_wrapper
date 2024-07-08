@@ -14,18 +14,21 @@ find_package(OpenCV REQUIRED)
 find_package(Cairo REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(k4a REQUIRED)
+find_package(VISP REQUIRED)
 
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
+pkg_check_modules(APRILTAG REQUIRED apriltag)  # Add this line to find the AprilTag package
 
 include_directories(
     include
     ${GTK3_INCLUDE_DIRS}
     ${CAIRO_INCLUDE_DIRS}
     ${VISION_GEOMETRY_INCLUDE_DIRS}
-    ${APRIL_TAG_INCLUDE_DIRS}
+    ${APRILTAG_INCLUDE_DIRS}  # Add this line to include the AprilTag headers
     ${EIGEN3_INCLUDE_DIR}
     ${OpenCV_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
+    ${VISP_INCLUDE_DIRS}
 )
 
 SET(LIB_KINECT_WRAPPER_SRC
@@ -34,7 +37,7 @@ SET(LIB_KINECT_WRAPPER_SRC
     src/SKPRDepthRegister.cpp
     src/SKDepthViewer.cpp
     src/SKPacket.cpp
-    # src/SKPRAprilTag.cpp
+    src/SKPRAprilTag.cpp
     src/SKPVideoDisplay.cpp
     src/SKWrapper.cpp
 )
@@ -42,8 +45,15 @@ SET(LIB_KINECT_WRAPPER_SRC
 SET(LIB_KINECT_WRAPPER_INCLUDES
 )
 
+# Specify the path to the ViSP libraries
+SET(VISP_LIB_DIR "/usr/lib/x86_64-linux-gnu/libvisp_detection.so")
 
 add_library(kinectwrapper SHARED ${LIB_KINECT_WRAPPER_SRC})
+
+# Link the AprilTag library
+# target_link_libraries(kinectwrapper PRIVATE ${APRILTAG_LIBRARIES} ${VISP_LIBRARIES})
+target_link_libraries(kinectwrapper PRIVATE ${APRILTAG_LIBRARIES} ${VISP_LIBRARIES} ${OpenCV_LIBS} ${GTK3_LIBRARIES} ${CAIRO_LIBRARIES} ${VISP_LIB_DIR} -lz)
+
 
 install(TARGETS kinectwrapper DESTINATION lib)
 install(DIRECTORY include/ DESTINATION include/kinectwrapper)
